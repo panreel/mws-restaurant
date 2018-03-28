@@ -1,0 +1,19 @@
+nav h1 a {
+  font-size: 1.3em;
+}
+.container-restaurants {
+  display: grid;
+  grid-template-columns: 32.33% 32.33% 32.33%;
+}
+.filter-options select {
+  width: 200px;
+}
+.filter-options select:not(:last-of-type) {
+  margin-right: 10px;
+}
+.inside #maincontent {
+  grid-template-columns: 49.5% 49.5%;
+  grid-template-areas: 
+  "map map"
+  "restaurants-container restaurants-reviews"
+}
