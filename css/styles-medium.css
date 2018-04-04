@@ -3,7 +3,7 @@ nav h1 a {
 }
 .container-restaurants {
   display: grid;
-  grid-template-columns: 49.5% 49.5%;
+  grid-template-columns: 50% 50%;
 }
 .filter-options select {
   width: 200px;
@@ -13,8 +13,8 @@ nav h1 a {
 }
 #restaurant-container {
   display: grid;
-  grid-template-areas: 49% 49%;
-  grid-column-gap: 2%; 
+  grid-template-columns: 40% 56%;
+  grid-column-gap: 4%; 
   grid-template-areas:
     "restaurant-details-title restaurant-details-title"
     "restaurant-details-main restaurant-details-side";
@@ -29,9 +29,10 @@ nav h1 a {
   grid-area: restaurant-details-side
 }
 .inside #maincontent {
+  grid-template-rows: 250px auto auto;
   grid-template-columns: 100%;
   grid-template-areas: 
-  "map map"
+  "map"
   "restaurants-container" 
   "restaurants-reviews"
 }

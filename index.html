@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang='en'>
 
   <head>
     <meta charset="utf-8">
@@ -7,7 +7,7 @@
     <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" media="screen and (min-width: 1000px)" href="css/styles-large.css" />
-    <link rel="stylesheet" media="screen and (min-width: 485px) and (max-width: 1000px)" href="css/styles-medium.css" />
+    <link rel="stylesheet" media="screen and (min-width: 500px) and (max-width: 1000px)" href="css/styles-medium.css" />
     <title>Restaurant Reviews</title>
   </head>
 
@@ -30,17 +30,15 @@
         <!-- Filter -->
         <div class="filter-options">
           <h2>Filter Results</h2>
-          <!--<label for="neighborhoods">Choose Neighborhood</label>-->
-          <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+          <select id="neighborhoods-select" name="neighborhoods" aria-label="Choose Neighborhood" onchange="updateRestaurants()">
             <option value="all">All Neighborhoods</option>
           </select>
-          <!--<label for="cuisines">Choose Cuisine</label>-->
-          <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+          <select id="cuisines-select" name="cuisines" aria-label="Choose Cuisine" onchange="updateRestaurants()">
             <option value="all">All Cuisines</option>
           </select>
         </div>
         <!-- Restaurants List -->
-        <ul id="restaurants-list" class="container-restaurants"></ul>
+        <div id="restaurants-list" class="container-restaurants"></div>
       </section>
     </main>
 
@@ -50,6 +48,7 @@
     </footer>
 
     <!-- JS -->    
+    <script type="text/javascript" src="js/launch-sw.js"></script>
     <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
     <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7bL015C46rzKK2tPqA6WcBOP9vVbqP_Y&libraries=places&callback=initMap"></script>
