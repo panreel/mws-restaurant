@@ -22,7 +22,7 @@ self.addEventListener('install', function(event) {
 //SW fetch
 self.addEventListener('fetch', function(event) {
   event.respondWith(
-    caches.match(event.request).then(function(resp) {
+    caches.match(event.request, {ignoreSearch: true}).then(function(resp) {
       return resp || fetch(event.request).then(function(response) {
         return (!event.request.url.endsWith('.jpg'))? response : caches.open(restaurantsCacheName).then(function(cache) {
           cache.put(event.request, response.clone());
