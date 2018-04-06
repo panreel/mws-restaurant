@@ -80,6 +80,7 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
+  //Make GMaps accessible
   updateRestaurants();
 }
 
