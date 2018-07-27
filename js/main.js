@@ -103,6 +103,7 @@ updateRestaurants = () => {
     } else {
       resetRestaurants(restaurants);
       fillRestaurantsHTML();
+      createObserver();
     }
   })
 }
@@ -141,7 +142,7 @@ createRestaurantHTML = (restaurant) => {
 
   const image = document.createElement('img');
   image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.setAttribute('data-src', DBHelper.imageUrlForRestaurant(restaurant));
   image.alt = 'A ' + restaurant.name + ' restaurant picture';
   li.append(image);
 
@@ -178,4 +179,40 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     });
     self.markers.push(marker);
   });
+}
+
+/**
+ * Create observer to display lazy-loading images
+ */
+createObserver = () => {
+  const images = document.querySelectorAll('.restaurant-img');  
+  //The observer for the images on the page
+  const observer = new IntersectionObserver(
+    (entries) => {
+      // Loop through the entries
+      entries.forEach(entry => {
+        // Are we in viewport?
+        if (entry.intersectionRatio > 0) {
+          // Stop watching and load the image
+          observer.unobserve(entry.target);
+          preloadImage(entry.target);
+        }
+      });
+    }, 
+    {
+      rootMargin: '0px',
+      threshold: '0.01'
+    });
+  
+  images.forEach(image => {
+    observer.observe(image);
+  });
+
+}
+
+/**
+ * Show the image, map the data-src attrib to the src attrib
+ */
+preloadImage = (img) => {
+  img.src = img.getAttribute('data-src');
 }

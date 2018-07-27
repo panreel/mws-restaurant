@@ -8,27 +8,37 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/restaurants`;
+  }
+
+  /**
+   * IDB Database name
+   */
+  static get DATABASE_IDB_NAME() {
+    return `mws-restaurants`
   }
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
+    
+    DBHelper._dbOpen(db => { //get stored restaurants data
+
+      DBHelper._readRestaurants(db, restaurants => {
         callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
-      }
-    };
-    xhr.send();
+      });
+    
+      fetch(DBHelper.DATABASE_URL) //get fresh restaurants data
+      .then(blob => blob.json())
+      .then(restaurants => {
+        DBHelper._dbOpen(db => { //save or update restaurants list in IDB
+          DBHelper._saveRestaurants(restaurants, db);});
+        callback(null, restaurants);
+      })
+      .catch(error => callback(`Request failed. Returned status of ${error}`, null));
+    });
   }
 
   /**
@@ -150,7 +160,10 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    if(restaurant.photograph)
+      return (`./img/${restaurant.photograph}.jpg`);
+    else
+      return ('./img/default_icon.jpg');
   }
 
   /**
@@ -165,6 +178,41 @@ class DBHelper {
       animation: google.maps.Animation.DROP}
     );
     return marker;
+  }
+
+  /**
+   * Open restaurants IDB
+   */
+  static _dbOpen(success, error) {
+    const r = indexedDB.open(DBHelper.DATABASE_IDB_NAME, 1);
+    r.onerror = error;
+    r.onsuccess = (event => success(event.target.result)); //return the db handler
+    r.onupgradeneeded = (event => {
+      const restaurants_store = event.target.result.createObjectStore("restaurants", {keyPath: "id"}); //create the restaurants object store
+      restaurants_store.createIndex("id", "id", {unique : true}); //create the index on the id key
+      restaurants_store.transaction.oncomplete = (event => success(event.target.result)); //return the db handler
+    });
+  }
+
+  /**
+   * Save restaurants in the IDB  
+   */
+  static _saveRestaurants(restaurants, db) {
+    const restaurants_store = db.transaction("restaurants", "readwrite").objectStore("restaurants"); //get the restaurants object store in r\w mode
+    restaurants.forEach(restaurant => restaurants_store.put(restaurant)); //add or update if restaurant with that id exists
+  }
+
+  /** Read restaurants from IDB */
+  static _readRestaurants(db, callback) {
+    let restaurants = [];
+    const restaurants_store = db.transaction("restaurants").objectStore("restaurants"); //get the restaurants object store
+    restaurants_store.openCursor().onsuccess = (event => { //iterate over the items
+      let cursor = event.target.result;
+      if(cursor) {
+        restaurants.push(cursor.value);
+        cursor.continue();
+      } else callback(restaurants);
+    });
   }
 
 }
