@@ -6,12 +6,8 @@ self.addEventListener('install', function(event) {
         caches.open(restaurantsCacheName).then(function(cache) {
           return cache.addAll([
             '/',
-            '/js/dbhelper.js',
-            '/js/main.js',
-            '/js/restaurant_info.js',
-            '/css/styles.css',
-            '/css/styles-medium.css',
-            '/css/styles-large.css',
+            '/dist/js/main.js',
+            '/dist/js/restaurant_info.js',
             '/data/restaurants.json',
             '/restaurant.html',
           ]);
