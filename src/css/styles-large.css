@@ -5,7 +5,7 @@
   }
   .container-restaurants {
     display: grid;
-    grid-template-columns: 32.33% 32.33% 32.33%;
+    grid-template-columns: 32% 32% 32%;
   }
   .filter-options select {
     width: 200px;

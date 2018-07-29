@@ -26,11 +26,7 @@ export default class DBHelper {
     
     DBHelper._dbOpen(db => { //get stored restaurants data
 
-      DBHelper._readRestaurants(db, restaurants => {
-        callback(null, restaurants);
-      });
-    
-      fetch(DBHelper.DATABASE_URL) //get fresh restaurants data
+      fetch(DBHelper.DATABASE_URL) //get fresh or cached restaurants data (if no connection)
       .then(blob => blob.json())
       .then(restaurants => {
         DBHelper._dbOpen(db => { //save or update restaurants list in IDB

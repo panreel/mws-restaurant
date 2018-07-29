@@ -8,8 +8,8 @@ self.addEventListener('install', function(event) {
             '/',
             '/dist/js/main.js',
             '/dist/js/restaurant_info.js',
-            '/data/restaurants.json',
             '/restaurant.html',
+            'http://localhost:1337/restaurants'
           ]);
         })
     );
