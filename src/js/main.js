@@ -193,14 +193,15 @@ function createRestaurantHTML(restaurant){
 
   const fav = document.createElement('a');
   fav.setAttribute('data-id', restaurant.id);
-  if(!restaurant.is_favorite) {
-    fav.className = 'add-fav';
+  if((typeof restaurant.is_favorite === "string" && restaurant.is_favorite === "false") ||
+    (typeof restaurant.is_favorite === "boolean" && restaurant.is_favorite === false)) {
+    fav.className = 'notfavorite';
     fav.innerHTML = 'Like it?'
-    fav.setAttribute('aria-label', 'Add to your favorites');
+    fav.setAttribute('aria-label', 'Click to add to your favorites');
   } else {
-    fav.className = 'rem-fav';
+    fav.className = 'favorite';
     fav.innerHTML = 'Favorite!'
-    fav.setAttribute('aria-label', 'Remove from your favorites');
+    fav.setAttribute('aria-label', 'Click to remove from your favorites');
   }
   fav.addEventListener('click', toggleFavorite);
   useractions.append(fav)
@@ -261,15 +262,16 @@ function preloadImage(img){
 function toggleFavorite() {
   let isFav = this.className,
       restaurantID = this.getAttribute('data-id');
-  if(isFav == 'add-fav'){
-    DBHelper.favoriteRestaurant(restaurantID);
-    this.className = 'rem-fav';
+  if(isFav == 'notfavorite'){
+    DBHelper
+    .favoriteRestaurant(restaurantID);
+    this.className = 'favorite';
     this.innerHTML = 'Favorite!'
-    this.setAttribute('aria-label', 'Remove from your favorites');
+    this.setAttribute('aria-label', 'Click to remove from your favorites');
   } else {
     DBHelper.unfavoriteRestaurant(restaurantID);
-    this.className = 'add-fav';
+    this.className = 'notfavorite';
     this.innerHTML = 'Like it?'
-    this.setAttribute('aria-label', 'Add to your favorites');
+    this.setAttribute('aria-label', 'Click to add to your favorites');
   }
 }

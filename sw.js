@@ -1,6 +1,6 @@
 let restaurantsCache = 'restaurantsapp-cache-v1',
     restaurantsIDB = 'mws-restaurants',
-    isAPIrequest = new RegExp(/(restaurants)$/);
+    isAPIrequest = new RegExp(/restaurants|restaurants\/[0-9]+\/\?is_favourite=(true|false)$/);
 
 //SW install
 self.addEventListener('install', function(event) {
@@ -25,7 +25,6 @@ self.addEventListener('activate', function(event) {
 
 //SW fetch
 self.addEventListener('fetch', function(event) {
-
   //if API request, do a network request for fresh data (and if succeeds save to DB) then fall back to IDB
   if(event.request.url.match(isAPIrequest)) {
     console.log("This is an API call: " + event.request.url);
@@ -86,6 +85,7 @@ function _idbOpen(success, error) {
 //Write restaurants DB
 function _idbWrite(db, restaurants) {
   const restaurants_store = db.transaction("restaurants", "readwrite").objectStore("restaurants"); //get the restaurants object store in r\w mode
+  if(!(restaurants instanceof Array)) restaurants = [restaurants];
   restaurants.forEach(restaurant => restaurants_store.put(restaurant)); //add or update if restaurant with that id exists
 }
 

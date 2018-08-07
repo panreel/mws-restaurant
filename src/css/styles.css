@@ -244,10 +244,10 @@ nav h1 a {
 #restaurants-list article a.view-more {
   background-color: #185F91;
 }
-#restaurants-list article a.add-fav {
+#restaurants-list article a.notfavorite {
   background-color: #eaa612;
 }
-#restaurants-list article a.rem-fav {
+#restaurants-list article a.favorite {
   background-color: #71a879;
 }
 

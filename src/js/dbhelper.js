@@ -23,7 +23,7 @@ export default class DBHelper {
   /**
    * Favorite a restaurant
    */
-  static favoriteRestaurant(id, callback) {
+  static favoriteRestaurant(id) {
     return fetch(this.DATABASE_URL + '/' + id + '/?is_favorite=true', { 
       method: 'PUT',
       mode: 'cors'})
@@ -33,7 +33,7 @@ export default class DBHelper {
   /**
    * Un-favorite a restaurant
    */
-  static unfavoriteRestaurant(id, callback) {
+  static unfavoriteRestaurant(id) {
     return fetch(this.DATABASE_URL + '/' + id + '/?is_favorite=false', { 
       method: 'PUT',
       mode: 'cors'})
