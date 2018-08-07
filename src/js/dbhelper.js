@@ -13,28 +13,31 @@ export default class DBHelper {
   }
 
   /**
-   * IDB Database name
+   * Fetch all restaurants.
    */
-  static get DATABASE_IDB_NAME() {
-    return `mws-restaurants`
+  static fetchRestaurants() {
+      return fetch(DBHelper.DATABASE_URL) //get fresh or cached restaurants data (if no connection)
+      .then(blob => blob.json())
   }
 
   /**
-   * Fetch all restaurants.
+   * Favorite a restaurant
    */
-  static fetchRestaurants(callback) {
-    
-    DBHelper._dbOpen(db => { //get stored restaurants data
+  static favoriteRestaurant(id, callback) {
+    return fetch(this.DATABASE_URL + '/' + id + '/?is_favorite=true', { 
+      method: 'PUT',
+      mode: 'cors'})
+      .then(blob => blob.json());
+  }
 
-      fetch(DBHelper.DATABASE_URL) //get fresh or cached restaurants data (if no connection)
-      .then(blob => blob.json())
-      .then(restaurants => {
-        DBHelper._dbOpen(db => { //save or update restaurants list in IDB
-          DBHelper._saveRestaurants(restaurants, db);});
-        callback(null, restaurants);
-      })
-      .catch(error => callback(`Request failed. Returned status of ${error}`, null));
-    });
+  /**
+   * Un-favorite a restaurant
+   */
+  static unfavoriteRestaurant(id, callback) {
+    return fetch(this.DATABASE_URL + '/' + id + '/?is_favorite=false', { 
+      method: 'PUT',
+      mode: 'cors'})
+      .then(blob => blob.json());
   }
 
   /**
@@ -42,18 +45,13 @@ export default class DBHelper {
    */
   static fetchRestaurantById(id, callback) {
     // fetch all restaurants with proper error handling.
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        const restaurant = restaurants.find(r => r.id == id);
-        if (restaurant) { // Got the restaurant
-          callback(null, restaurant);
-        } else { // Restaurant does not exist in the database
-          callback('Restaurant does not exist', null);
-        }
-      }
-    });
+    DBHelper
+    .fetchRestaurants()
+    .then(restaurants => {
+      const restaurant = restaurants.find(r => r.id == id);
+      if(restaurant) callback(null, restaurant);  // Got the restaurant
+      else callback('Restaurant does not exist', null);}) // Restaurant does not exist in the database
+    .catch(error => callback(null, error));
   }
 
   /**
@@ -61,15 +59,13 @@ export default class DBHelper {
    */
   static fetchRestaurantByCuisine(cuisine, callback) {
     // Fetch all restaurants  with proper error handling
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        // Filter restaurants to have only given cuisine type
-        const results = restaurants.filter(r => r.cuisine_type == cuisine);
-        callback(null, results);
-      }
-    });
+    DBHelper
+    .fetchRestaurants()
+    .then(restaurants => {
+      // Filter restaurants to have only given cuisine type
+      const results = restaurants.filter(r => r.cuisine_type == cuisine);
+      callback(null, results);})
+    .catch(error => callback(null, error));
   }
 
   /**
@@ -77,15 +73,13 @@ export default class DBHelper {
    */
   static fetchRestaurantByNeighborhood(neighborhood, callback) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        // Filter restaurants to have only given neighborhood
-        const results = restaurants.filter(r => r.neighborhood == neighborhood);
-        callback(null, results);
-      }
-    });
+    DBHelper
+    .fetchRestaurants()
+    .then(restaurants => {
+      // Filter restaurants to have only given neighborhood
+      const results = restaurants.filter(r => r.neighborhood == neighborhood);
+      callback(null, results);})
+    .catch(error => callback(null, error));
   }
 
   /**
@@ -93,20 +87,14 @@ export default class DBHelper {
    */
   static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, callback) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        let results = restaurants
-        if (cuisine != 'all') { // filter by cuisine
-          results = results.filter(r => r.cuisine_type == cuisine);
-        }
-        if (neighborhood != 'all') { // filter by neighborhood
-          results = results.filter(r => r.neighborhood == neighborhood);
-        }
-        callback(null, results);
-      }
-    });
+    DBHelper
+    .fetchRestaurants()
+    .then(restaurants => {
+      let results = restaurants;
+      if (cuisine != 'all') results = results.filter(r => r.cuisine_type == cuisine); // filter by cuisine
+      if (neighborhood != 'all') results = results.filter(r => r.neighborhood == neighborhood); // filter by neighborhood
+      callback(results, null);})
+    .catch(error => callback(null, error));
   }
 
   /**
@@ -114,17 +102,14 @@ export default class DBHelper {
    */
   static fetchNeighborhoods(callback) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        // Get all neighborhoods from all restaurants
-        const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood)
-        // Remove duplicates from neighborhoods
-        const uniqueNeighborhoods = neighborhoods.filter((v, i) => neighborhoods.indexOf(v) == i)
-        callback(null, uniqueNeighborhoods);
-      }
-    });
+    DBHelper
+    .fetchRestaurants()
+    .then(restaurants => { // Get all neighborhoods from all restaurants
+      const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood)
+      // Remove duplicates from neighborhoods
+      const uniqueNeighborhoods = neighborhoods.filter((v, i) => neighborhoods.indexOf(v) == i)
+      callback(null, uniqueNeighborhoods);})
+    .catch(error => callback(null, error));
   }
 
   /**
@@ -132,17 +117,15 @@ export default class DBHelper {
    */
   static fetchCuisines(callback) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        // Get all cuisines from all restaurants
-        const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type)
-        // Remove duplicates from cuisines
-        const uniqueCuisines = cuisines.filter((v, i) => cuisines.indexOf(v) == i)
-        callback(null, uniqueCuisines);
-      }
-    });
+    DBHelper
+    .fetchRestaurants()
+    .then(restaurants => {
+      // Get all cuisines from all restaurants
+      const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type)
+      // Remove duplicates from cuisines
+      const uniqueCuisines = cuisines.filter((v, i) => cuisines.indexOf(v) == i)
+      callback(null, uniqueCuisines);})
+    .catch(error => callback(null, error));
   }
 
   /**
@@ -174,41 +157,6 @@ export default class DBHelper {
       animation: google.maps.Animation.DROP}
     );
     return marker;
-  }
-
-  /**
-   * Open restaurants IDB
-   */
-  static _dbOpen(success, error) {
-    const r = indexedDB.open(DBHelper.DATABASE_IDB_NAME, 1);
-    r.onerror = error;
-    r.onsuccess = (event => success(event.target.result)); //return the db handler
-    r.onupgradeneeded = (event => {
-      const restaurants_store = event.target.result.createObjectStore("restaurants", {keyPath: "id"}); //create the restaurants object store
-      restaurants_store.createIndex("id", "id", {unique : true}); //create the index on the id key
-      restaurants_store.transaction.oncomplete = (event => success(event.target.result)); //return the db handler
-    });
-  }
-
-  /**
-   * Save restaurants in the IDB  
-   */
-  static _saveRestaurants(restaurants, db) {
-    const restaurants_store = db.transaction("restaurants", "readwrite").objectStore("restaurants"); //get the restaurants object store in r\w mode
-    restaurants.forEach(restaurant => restaurants_store.put(restaurant)); //add or update if restaurant with that id exists
-  }
-
-  /** Read restaurants from IDB */
-  static _readRestaurants(db, callback) {
-    let restaurants = [];
-    const restaurants_store = db.transaction("restaurants").objectStore("restaurants"); //get the restaurants object store
-    restaurants_store.openCursor().onsuccess = (event => { //iterate over the items
-      let cursor = event.target.result;
-      if(cursor) {
-        restaurants.push(cursor.value);
-        cursor.continue();
-      } else callback(restaurants);
-    });
   }
 
 }

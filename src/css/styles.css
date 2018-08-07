@@ -141,7 +141,8 @@ nav h1 a {
   height: 60px;
   top: calc(50% - 30px);
   left: calc(50% - 125px);
-  font-size: 1.2em;
+  font-size: 1.1em;
+  font-weight: 200;
   border-radius: 5px;
   border-color: transparent;
   background-color: #185F91;
@@ -209,31 +210,45 @@ nav h1 a {
   max-width: 100%;
   min-width: 100%;
 }
-#restaurants-list article h1 {
+#restaurants-list article h2 {
   color: #185F91;
   font-family: Arial,sans-serif;
-  font-size: 14pt;
+  font-size: 12pt;
   font-weight: 200;
   letter-spacing: 0;
   line-height: 1.3;
+  height: 2.6;
   margin: 20px 0 10px;
-  text-transform: uppercase;
 }
 #restaurants-list p {
   margin: 0;
-  font-size: 11pt;
+  font-size: 9pt;
+}
+#restaurants-list .user-actions {
+  display: grid;
+  grid-template-columns: 49% 49%;
+  grid-column-gap: 2%;
 }
 #restaurants-list article a {
-  background-color: #185F91;
-  border-bottom: 3px solid #eee;
+  border-radius: 5px;
+  border-bottom: 2px solid #eee;
   color: #fff;
   display: inline-block;
-  font-size: 10pt;
+  font-size: 9pt;
   margin: 15px 0 0;
   padding: 8px 30px 10px;
   text-align: center;
   text-decoration: none;
-  text-transform: uppercase;
+  cursor: pointer;
+}
+#restaurants-list article a.view-more {
+  background-color: #185F91;
+}
+#restaurants-list article a.add-fav {
+  background-color: #eaa612;
+}
+#restaurants-list article a.rem-fav {
+  background-color: #71a879;
 }
 
 /* ====================== Restaurant Details ====================== */
