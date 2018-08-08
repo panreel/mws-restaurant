@@ -303,13 +303,23 @@ nav h1 a {
 #new-review {
   margin: 0 0 20px;
   display: grid;
-  grid-template-rows: 50px 50px auto;
+  grid-template-rows: 60px 50px 50px auto;
   grid-template-columns: 100%;
   grid-template-areas:
-  "new-review-reviewer "
+  "new-review-error"
+  "new-review-reviewer"
   "new-review-rating"
   "new-review-comments"
   "new-review-submit";
+}
+#new-review-error {
+  grid-area: new-review-error;
+  border: 1px solid red;
+  background-color: red;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+  vertical-align: middle;
 }
 #new-review-reviewer {
   grid-area: new-review-reviewer;

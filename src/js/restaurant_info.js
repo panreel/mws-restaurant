@@ -170,6 +170,16 @@ function getReviewForm() {
 }
 
 /**
+ * Validate a form is not empty
+ */
+function validateForm() {
+  return 
+  (document.getElementById('new-review-reviewer').value != "") &&
+  (document.querySelector('#new-review-rating input:checked') != null) &&
+  (ocument.getElementById('new-review-comments').value != "");
+}
+
+/**
  * Clear review form
  */
 function clearReviewForm() {
@@ -179,12 +189,21 @@ function clearReviewForm() {
 }
 
 /**
+ * Show error form message
+ */
+
+
+/**
  * Submit review
  */
 function submitReview() {
-  const form = getReviewForm();
-  const id = getParameterByName('id');
-  console.log(form);
+  if(validateForm()) {
+    const form = getReviewForm();
+    const id = getParameterByName('id');
+    console.log(form);
+  } else {
+    console.log("Show error!");
+  }
 }
 
 /**
