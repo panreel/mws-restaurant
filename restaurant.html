@@ -42,7 +42,46 @@
     </section>
     <!-- Reviews -->
     <section id="reviews-container">
-        <div id="reviews-list"></div>
+      <h3>Add your own review</h3>  
+      <div id="new-review">
+        <input type="text" id="new-review-reviewer" placeholder="Insert your name...">
+        <form type="range" class="rating" id="new-review-rating">
+            <label>
+              <input type="radio" name="stars" value="1" />
+              <span class="icon">★</span>
+            </label>
+            <label>
+              <input type="radio" name="stars" value="2" />
+              <span class="icon">★</span>
+              <span class="icon">&nbsp;&nbsp;★</span>
+            </label>
+            <label>
+              <input type="radio" name="stars" value="3" />
+              <span class="icon">★</span>
+              <span class="icon">&nbsp;&nbsp;★</span>
+              <span class="icon">&nbsp;&nbsp;★</span>   
+            </label>
+            <label>
+              <input type="radio" name="stars" value="4" />
+              <span class="icon">★</span>
+              <span class="icon">&nbsp;&nbsp;★</span>
+              <span class="icon">&nbsp;&nbsp;★</span>
+              <span class="icon">&nbsp;&nbsp;★</span>
+            </label>
+            <label>
+              <input type="radio" name="stars" value="5" />
+              <span class="icon">★</span>
+              <span class="icon">&nbsp;&nbsp;★</span>
+              <span class="icon">&nbsp;&nbsp;★</span>
+              <span class="icon">&nbsp;&nbsp;★</span>
+              <span class="icon">&nbsp;&nbsp;★</span>
+            </label>
+          </form>
+        <textarea id="new-review-comments" placeholder="Write a review..."></textarea>
+        <a id="new-review-submit">Submit your review!</a>
+      </div>
+      <h3>Reviews</h3>
+      <div id="reviews-list"></div>
     </section>
   </main>
 

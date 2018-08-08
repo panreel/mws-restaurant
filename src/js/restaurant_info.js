@@ -11,6 +11,9 @@ var map;
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
+  //register the listener
+  document.getElementById('new-review-submit').addEventListener('click', submitReview);
+  //populate page data
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
       console.error(error);
@@ -105,9 +108,6 @@ function fillRestaurantHoursHTML(operatingHours = self.restaurant.operating_hour
  */
 function fillReviewsHTML(reviews = self.restaurant.reviews) {
   const container = document.getElementById('reviews-container');
-  const title = document.createElement('h3');
-  title.innerHTML = 'Reviews';
-  container.appendChild(title);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -119,6 +119,7 @@ function fillReviewsHTML(reviews = self.restaurant.reviews) {
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
+
   container.appendChild(ul);
 }
 
@@ -155,6 +156,35 @@ function fillBreadcrumb(restaurant=self.restaurant){
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
+}
+
+/**
+ * Extract review form and export to JSON
+ */
+function getReviewForm() {
+  return {
+    name: document.getElementById('new-review-reviewer').value,
+    rating: document.querySelector('#new-review-rating input:checked').value,
+    comments: document.getElementById('new-review-comments').value
+  }
+}
+
+/**
+ * Clear review form
+ */
+function clearReviewForm() {
+  document.getElementById('new-review-reviewer').value = '';
+  document.getElementById('new-review-rating').value = '';
+  document.getElementById('new-review-comments').value = '';
+}
+
+/**
+ * Submit review
+ */
+function submitReview() {
+  const form = getReviewForm();
+  const id = getParameterByName('id');
+  console.log(form);
 }
 
 /**

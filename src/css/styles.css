@@ -277,7 +277,6 @@ nav h1 a {
   font-weight: 200;
   letter-spacing: 0;
   margin: 0 0 15px;
-  text-transform: uppercase;
   line-height: 1.1;
 }
 #restaurant-img {
@@ -300,6 +299,54 @@ nav h1 a {
 }
 #restaurant-hours {
   width: 100%;
+}
+#new-review {
+  margin: 0 0 20px;
+  display: grid;
+  grid-template-rows: 50px 50px auto;
+  grid-template-columns: 100%;
+  grid-template-areas:
+  "new-review-reviewer "
+  "new-review-rating"
+  "new-review-comments"
+  "new-review-submit";
+}
+#new-review-reviewer {
+  grid-area: new-review-reviewer;
+  font-size: 10pt;
+  padding: 10px;
+  border-color: lightgrey;
+  border-style: solid;
+  border-width: 1px;
+}
+#new-review-rating {
+  grid-area: new-review-rating;
+  position: relative;
+  display: inline-block;
+  font-size: 20px;
+}
+#new-review-comments {
+  grid-area: new-review-comments;
+  min-height: 100px;
+  font-size: 10pt;
+  padding: 3px;
+  resize: none;
+  border-color: lightgrey;
+  border-style: solid;
+  border-width: 1px;
+  padding: 10px;
+}
+#new-review-submit {
+  grid-area: new-review-submit;
+  color: #fff;
+  display: inline-block;
+  font-size: 10pt;
+  margin: 15px 0 0;
+  padding: 8px 30px 10px;
+  text-align: center;
+  background-color: #185F91;
+  border-radius: 5px;
+  cursor: pointer;
 }
 #restaurant-container, #reviews-container {
   border-bottom: 1px solid #d9d9d9;
@@ -340,4 +387,51 @@ nav h1 a {
 }
 #restaurant-hours td {
   color: #666;
+}
+.rating label input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+.rating label {
+  position: absolute;
+  top: calc(50% - 15px);
+  left: calc(50% - 72px);
+  height: 100%;
+  cursor: pointer;
+}
+.rating:not(:hover) label input:checked ~ .icon,
+.rating:hover label:hover input ~ .icon {
+  color: #09f;
+}
+.rating label:nth-child(1) {
+  z-index: 5;
+}
+
+.rating label:nth-child(2) {
+  z-index: 4;
+}
+
+.rating label:nth-child(3) {
+  z-index: 3;
+}
+
+.rating label:nth-child(4) {
+  z-index: 2;
+}
+
+.rating label:nth-child(5) {
+  z-index: 1;
+}
+.rating label input:focus:not(:checked) ~ .icon:last-child {
+  color: #000;
+  text-shadow: 0 0 5px #09f;
+}
+.rating label:last-child .icon {
+  color: #000;
+}
+.rating label .icon {
+  float: left;
+  color: transparent;
 }

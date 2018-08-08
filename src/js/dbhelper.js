@@ -16,8 +16,8 @@ export default class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants() {
-      return fetch(DBHelper.DATABASE_URL) //get fresh or cached restaurants data (if no connection)
-      .then(blob => blob.json())
+    return fetch(DBHelper.DATABASE_URL) //get fresh or cached restaurants data (if no connection)
+    .then(blob => blob.json())
   }
 
   /**
@@ -38,6 +38,18 @@ export default class DBHelper {
       method: 'PUT',
       mode: 'cors'})
       .then(blob => blob.json());
+  }
+
+  /**
+   * Add a review
+   */
+  static addReview(id, review) {
+    review.restaurant_id = id;
+    return fetch(this.DATABASE_URL + '/reviews', {
+      method: 'POST',
+      mode: 'cors'
+    })
+    .then(blob => blob.json());
   }
 
   /**
