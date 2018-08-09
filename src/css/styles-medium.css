@@ -30,6 +30,9 @@
   #restaurant-container-details-side {
     grid-area: restaurant-details-side
   }
+  #favorite-button {
+    margin: 0;
+  }
   .inside #maincontent {
     grid-template-rows: 250px auto auto;
     grid-template-columns: 100%;

@@ -229,7 +229,8 @@ nav h1 a {
   grid-template-columns: 49% 49%;
   grid-column-gap: 2%;
 }
-#restaurants-list article a {
+#restaurants-list article a, 
+#favorite-button {
   border-radius: 5px;
   border-bottom: 2px solid #eee;
   color: #fff;
@@ -241,13 +242,19 @@ nav h1 a {
   text-decoration: none;
   cursor: pointer;
 }
-#restaurants-list article a.view-more {
+#favorite-button {
+  margin: 0px 0px 15px;
+}
+#restaurants-list article a.view-more,
+#favorite-button.view-more {
   background-color: #185F91;
 }
-#restaurants-list article a.notfavorite {
+#restaurants-list article a.notfavorite,
+#favorite-button.notfavorite {
   background-color: #eaa612;
 }
-#restaurants-list article a.favorite {
+#restaurants-list article a.favorite,
+#favorite-button.favorite {
   background-color: #71a879;
 }
 
@@ -303,7 +310,7 @@ nav h1 a {
 #new-review {
   margin: 0 0 20px;
   display: grid;
-  grid-template-rows: 60px 50px 50px auto;
+  grid-template-rows: auto 50px 50px auto;
   grid-template-columns: 100%;
   grid-template-areas:
   "new-review-error"
@@ -314,12 +321,24 @@ nav h1 a {
 }
 #new-review-error {
   grid-area: new-review-error;
-  border: 1px solid red;
-  background-color: red;
+  background-color: rgba(253, 100, 100, 0.44);
   border-radius: 5px;
   margin-bottom: 10px;
   text-align: center;
   vertical-align: middle;
+  position: relative;
+  line-height: 4.5;
+  height: 60px;
+  display: none;
+}
+#new-review-error-close {
+  position: absolute;
+  display: inline-block;
+  right: 10px;
+  line-height: 1.8;
+  font-size: 13pt;
+  cursor: pointer;
+  color: darkslategray;
 }
 #new-review-reviewer {
   grid-area: new-review-reviewer;
@@ -436,10 +455,10 @@ nav h1 a {
 }
 .rating label input:focus:not(:checked) ~ .icon:last-child {
   color: #000;
-  text-shadow: 0 0 5px #09f;
+  text-shadow: 0 0 5px #185f91;
 }
 .rating label:last-child .icon {
-  color: #000;
+  color: #828282;
 }
 .rating label .icon {
   float: left;

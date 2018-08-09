@@ -7,16 +7,21 @@ export default class DBHelper {
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
-  static get DATABASE_URL() {
+  static get RESTAURANTS_URL() {
     const port = 1337 // Change this to your server port
     return `http://localhost:${port}/restaurants`;
+  }
+
+  static get REVIEWS_URL() {
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/reviews`;
   }
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants() {
-    return fetch(DBHelper.DATABASE_URL) //get fresh or cached restaurants data (if no connection)
+    return fetch(DBHelper.RESTAURANTS_URL) //get fresh or cached restaurants data (if no connection)
     .then(blob => blob.json())
   }
 
@@ -24,7 +29,7 @@ export default class DBHelper {
    * Favorite a restaurant
    */
   static favoriteRestaurant(id) {
-    return fetch(this.DATABASE_URL + '/' + id + '/?is_favorite=true', { 
+    return fetch(this.RESTAURANTS_URL + '/' + id + '/?is_favorite=true', { 
       method: 'PUT',
       mode: 'cors'})
       .then(blob => blob.json());
@@ -34,10 +39,19 @@ export default class DBHelper {
    * Un-favorite a restaurant
    */
   static unfavoriteRestaurant(id) {
-    return fetch(this.DATABASE_URL + '/' + id + '/?is_favorite=false', { 
+    return fetch(this.RESTAURANTS_URL + '/' + id + '/?is_favorite=false', { 
       method: 'PUT',
       mode: 'cors'})
       .then(blob => blob.json());
+  }
+
+/**
+ * Get all the reviews for a restaurant
+ */  
+  static fetchRestaurantReviews(id) {
+    return fetch(this.REVIEWS_URL + '/?restaurant_id=' + id, {
+      mode: 'cors'
+    }).then(blob => blob.json());
   }
 
   /**
@@ -45,9 +59,13 @@ export default class DBHelper {
    */
   static addReview(id, review) {
     review.restaurant_id = id;
-    return fetch(this.DATABASE_URL + '/reviews', {
+    return fetch(this.REVIEWS_URL, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
       method: 'POST',
-      mode: 'cors'
+      mode: 'cors',
+      body: JSON.stringify(review)
     })
     .then(blob => blob.json());
   }
@@ -107,6 +125,16 @@ export default class DBHelper {
       if (neighborhood != 'all') results = results.filter(r => r.neighborhood == neighborhood); // filter by neighborhood
       callback(results, null);})
     .catch(error => callback(null, error));
+  }
+
+  /**
+   * Fetch restaurant reviews
+   */
+  static getRestaurantReviews(id, callback) {
+    DBHelper
+    .fetchRestaurantReviews(id)
+    .then(reviews => callback(null, reviews))
+    .catch(error => callback(error, null));
   }
 
   /**

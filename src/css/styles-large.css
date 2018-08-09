@@ -20,5 +20,8 @@
     "map map"
     "restaurants-container restaurants-reviews"
   }
+  #favorite-button {
+    margin: 0 0 15px;
+  }
 
 }

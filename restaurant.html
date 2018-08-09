@@ -31,7 +31,10 @@
     <!-- Restaurant Details -->
     <section id="restaurant-container">
       <h2 id="restaurant-name"></h2>
-      <div id="restaurant-container-details-main">  
+      <div id="restaurant-favorite-area">
+        <a id="favorite-button"></a>  
+      </div>
+      <div id="restaurant-container-details-main">
         <img id="restaurant-img">
         <p id="restaurant-cuisine"></p>
       </div>
@@ -45,8 +48,8 @@
       <h3>Add your own review</h3>  
       <div id="new-review">
         <div id="new-review-error">
-          Please fill all the fields before submitting!
-          <a>x</a>
+          <span id="new-review-error-text"></span>
+          <a id="new-review-error-close">x</a>
         </div>
         <input type="text" id="new-review-reviewer" placeholder="Insert your name...">
         <form type="range" class="rating" id="new-review-rating">

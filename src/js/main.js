@@ -249,7 +249,6 @@ function createObserver(){
   images.forEach(image => {
     observer.observe(image);
   });
-
 }
 
 /**
@@ -259,6 +258,9 @@ function preloadImage(img){
   img.src = img.getAttribute('data-src');
 }
 
+/**
+ * Trigger favorite/unfavorite controls
+ */
 function toggleFavorite() {
   let isFav = this.className,
       restaurantID = this.getAttribute('data-id');
