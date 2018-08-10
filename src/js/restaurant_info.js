@@ -171,7 +171,7 @@ function createReviewHTML(review){
   li.appendChild(name);
 
   const date = document.createElement('p'),
-    d = new Date(review.createdAt);
+    d = (review.createdAt) ? new Date(review.createdAt) : new Date();
   date.innerHTML = d.getDay() + '/' + d.getMonth() + '/' + d.getFullYear();
   li.appendChild(date);
 
@@ -250,17 +250,28 @@ function showError(message) {
 function submitReview() {
   if(validateForm()) {
     const form = getReviewForm();
-    const id = getParameterByName('id');
-    DBHelper.addReview(id, form)
-      .then(review => {
-        fillReviewHTML(review);
-        toggleWarning();
-        clearReviewForm();
-      })
-      .catch((error) => showError(error));
-  } else {
-    showError(INVALID_REVIEW_INPUT);
-  }
+    const restaurant_id = getParameterByName('id');
+
+    fillReviewHTML(form);
+    toggleWarning();
+    clearReviewForm();
+    storeReview(restaurant_id, form);
+    
+  } else 
+  showError(INVALID_REVIEW_INPUT);
+}
+
+/**
+ * Store review in IDB for offline submitting
+ */
+function storeReview(id, review) {
+  DBHelper.storeIDBReview(id, review)
+    .then(() => {
+      navigator.serviceWorker.ready
+        .then(reg => reg.sync.register('review-post').then(() => {
+        console.log('Sync registered');
+      }));
+    });
 }
 
 /**

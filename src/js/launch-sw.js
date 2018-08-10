@@ -1,5 +1,5 @@
 //Launch the Service Worker
-if ('serviceWorker' in navigator && 'SyncManager' in window) {
+if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js', {scope: '/'})
   .then(function(reg) {
     //Registration worked

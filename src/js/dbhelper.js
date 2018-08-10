@@ -17,6 +17,11 @@ export default class DBHelper {
     return `http://localhost:${port}/reviews`;
   }
 
+  static get OUTBOXREVIEWS_URL() {
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/outboxreq`;
+  }
+
   /**
    * Fetch all restaurants.
    */
@@ -60,6 +65,22 @@ export default class DBHelper {
   static addReview(id, review) {
     review.restaurant_id = id;
     return fetch(this.REVIEWS_URL, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(review)
+    })
+    .then(blob => blob.json());
+  }
+
+  /**
+   * Store a review
+   */
+  static storeIDBReview(id, review) {
+    review.restaurant_id = id;
+    return fetch(this.OUTBOXREVIEWS_URL, {
       headers: {
         'Content-Type': 'application/json'
       },

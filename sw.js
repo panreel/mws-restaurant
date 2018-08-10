@@ -2,8 +2,11 @@ const restaurantsCache = 'restaurantsapp-cache-v1',
     restaurantsIDB = 'mws-restaurants',
     isRestaurantAPIRequest = new RegExp(/restaurants|restaurants\/[0-9]+\/\?is_favourite=(true|false)$/);
     isReviewAPIRequest = new RegExp(/reviews/),
+    isOutboxReviewAPIRequest = new RegExp(/outboxreq/)
     DB_RESTAURANTS_MODE = 'restaurants',
-    DB_REVIEWS_MODE = 'reviews';
+    DB_REVIEWS_MODE = 'reviews',
+    DB_OUTBOXREVIEWS_MODE = 'outbox-reviews',
+    REVIEWS_URL = `http://localhost:1337/reviews`;;
 
 //SW install
 self.addEventListener('install', function(event) {
@@ -26,19 +29,54 @@ self.addEventListener('activate', function(event) {
   );
 });
 
+//SW Sync
+self.addEventListener('sync', function (event) {
+  if(event.tag === 'review-post') {
+    console.log("We hit sync");
+    event.waitUntil(_idbOpen(db => {
+      _idbRead(db, DB_OUTBOXREVIEWS_MODE, 
+      reviews => {
+        let _ps = [];
+        reviews.forEach(review => {
+          let _p = fetch(REVIEWS_URL, {
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify(review)
+          });
+          _ps.push(_p);
+        });
+        return Promise
+          .all(_ps)
+          .then((args) => {
+            return new Promise((success, fail) => {
+              args.forEach(a => {
+                a.json().then(j => {
+                  _idbOpen(db => _idbDelete(db, DB_OUTBOXREVIEWS_MODE, j.rev_id));
+                });
+              });
+              success();
+            });
+          });
+      });
+    }));
+  }
+});
+
 //SW fetch
 self.addEventListener('fetch', function(event) {
   //if API request, do a network request for fresh data (and if succeeds save to DB) then fall back to IDB
   const _apiReq = event.request.url.match(isRestaurantAPIRequest),
-        _revReq = event.request.url.match(isReviewAPIRequest);
+        _revReq = event.request.url.match(isReviewAPIRequest),
+        _obReq = event.request.url.match(isOutboxReviewAPIRequest);
   if(_apiReq || _revReq) {
     //check for network mode
     let mode = (_apiReq)? DB_RESTAURANTS_MODE : DB_REVIEWS_MODE;
       let _id = null;
     if(mode == DB_REVIEWS_MODE)
       _id = (new URL(event.request.url)).searchParams.get("restaurant_id");
-      console.log("We have an ID: " + _id);
-    console.log("This is an API call: " + event.request.url);
     event.respondWith(
       fetch(event.request)
       .then(function(res) {
@@ -47,12 +85,13 @@ self.addEventListener('fetch', function(event) {
         return r;
       })
       .catch(function(error){
-        console.log("NO CONNECTION");
         return new Promise(function(success, failure) {
           _idbOpen(db => _idbRead(db, mode, data => {
             let r = new Response(JSON.stringify(data),
             {
-              headers: { "Content-Type" : "application/json" }
+              headers: { 
+                
+                "Content-Type" : "application/json" }
             });
             success(r);
           }, _id));  
@@ -62,6 +101,12 @@ self.addEventListener('fetch', function(event) {
         return res;
       })
     )
+  //if API request but to save post request to IDB
+  } else if(_obReq) {
+    const _obmode = DB_OUTBOXREVIEWS_MODE;
+    event.request.json().then(data => _idbOpen(db => _idbWrite(db, _obmode, [data])));
+    event.respondWith(new Response("{}", {headers: {"Content-Type" : "application/json"}}
+  ));
   }
   //if !API request, search in cache, otherwise ask to the network and cache then
   else {
@@ -90,8 +135,9 @@ function _idbOpen(success, error) {
   r.onupgradeneeded = (event => {
     const restaurants_store = event.target.result.createObjectStore(DB_RESTAURANTS_MODE, {keyPath: "id"}); //create the restaurants object store
     restaurants_store.createIndex("id", "id", {unique : true}); //create the index on the id key
-    const reviews_store = event.target.result.createObjectStore(DB_REVIEWS_MODE, {keyPath: "id"}); //create the restaurants object store
+    const reviews_store = event.target.result.createObjectStore(DB_REVIEWS_MODE, {keyPath: "id"}); //create the reviews object store
     reviews_store.createIndex("id", "id", {unique : true}); //create the index on the id key
+    const reviews_outbox = event.target.result.createObjectStore(DB_OUTBOXREVIEWS_MODE, {keyPath: "rev_id", autoIncrement:true}); //create the outbox reviews object store
     event.target.transaction.oncomplete = (event => {if(success) success(event.target.result)}); //return the db handler
   });
 }
@@ -106,18 +152,13 @@ function _idbWrite(db, mode, data) {
 
 //Read restaurants DB
 function _idbRead(db, mode, callback, id) {
-  console.log("We have a read ID: " + id);
   const data_store = db.transaction(mode).objectStore(mode); //get the restaurants object store
       let data = [];
       data_store.openCursor().onsuccess = (event => { //iterate over the items
       let cursor = event.target.result;
       if(cursor) {
         let x = cursor.value;
-        console.log(x);
-        console.log("Check the mode: " + mode + ", id: " + x.id);
         if(mode == DB_REVIEWS_MODE && id == x.id) {
-          console.log(x);
-          console.log(x.reviews);
           callback(x.reviews);
           return;
         } else 
@@ -126,4 +167,11 @@ function _idbRead(db, mode, callback, id) {
       }
       else callback(data);
     });
+}
+
+//Delete restaurants DB
+function _idbDelete(db, mode, id) {
+  const data_store = db.transaction(mode, "readwrite").objectStore(mode); //get the restaurants object store
+  if(id) data_store.delete(id);
+  else data_store.clear();
 }
