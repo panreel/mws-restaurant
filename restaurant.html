@@ -32,7 +32,7 @@
     <section id="restaurant-container">
       <h2 id="restaurant-name"></h2>
       <div id="restaurant-favorite-area">
-        <a id="favorite-button"></a>  
+        <button id="favorite-button"></a>  
       </div>
       <div id="restaurant-container-details-main">
         <img id="restaurant-img">
@@ -49,34 +49,34 @@
       <div id="new-review">
         <div id="new-review-error">
           <span id="new-review-error-text"></span>
-          <a id="new-review-error-close">x</a>
+          <a id="new-review-error-close" aria-label="Close">x</a>
         </div>
-        <input type="text" id="new-review-reviewer" placeholder="Insert your name...">
-        <form type="range" class="rating" id="new-review-rating">
+        <input type="text" id="new-review-reviewer" aria-required="true" placeholder="Insert your name..." aria-label="Insert your name">
+        <form type="range" class="rating" id="new-review-rating" aria-label="Add your rating">
             <label>
-              <input type="radio" name="stars" value="1" />
+              <input type="radio" name="stars" value="1" aria-label="1 star rating"/>
               <span class="icon">★</span>
             </label>
             <label>
-              <input type="radio" name="stars" value="2" />
+              <input type="radio" name="stars" value="2" aria-label="2 stars rating"/>
               <span class="icon">★</span>
               <span class="icon">&nbsp;&nbsp;★</span>
             </label>
             <label>
-              <input type="radio" name="stars" value="3" />
+              <input type="radio" name="stars" value="3" aria-label="3 stars rating"/>
               <span class="icon">★</span>
               <span class="icon">&nbsp;&nbsp;★</span>
               <span class="icon">&nbsp;&nbsp;★</span>   
             </label>
             <label>
-              <input type="radio" name="stars" value="4" />
+              <input type="radio" name="stars" value="4" aria-label="4 stars rating"/>
               <span class="icon">★</span>
               <span class="icon">&nbsp;&nbsp;★</span>
               <span class="icon">&nbsp;&nbsp;★</span>
               <span class="icon">&nbsp;&nbsp;★</span>
             </label>
             <label>
-              <input type="radio" name="stars" value="5" />
+              <input type="radio" name="stars" value="5" aria-label="5 stars rating"/>
               <span class="icon">★</span>
               <span class="icon">&nbsp;&nbsp;★</span>
               <span class="icon">&nbsp;&nbsp;★</span>
@@ -84,8 +84,8 @@
               <span class="icon">&nbsp;&nbsp;★</span>
             </label>
           </form>
-        <textarea id="new-review-comments" placeholder="Write a review..."></textarea>
-        <a id="new-review-submit">Submit your review!</a>
+        <textarea id="new-review-comments" placeholder="Write a review..." aria-required="true" aria-label="Add your review"></textarea>
+        <button id="new-review-submit">Submit your review!</button>
       </div>
       <h3>Reviews</h3>
       <div id="reviews-list"></div>

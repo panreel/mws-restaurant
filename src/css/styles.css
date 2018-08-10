@@ -230,6 +230,7 @@ nav h1 a {
   grid-column-gap: 2%;
 }
 #restaurants-list article a, 
+#restaurants-list article button,
 #favorite-button {
   border-radius: 5px;
   border-bottom: 2px solid #eee;
@@ -245,15 +246,14 @@ nav h1 a {
 #favorite-button {
   margin: 0px 0px 15px;
 }
-#restaurants-list article a.view-more,
-#favorite-button.view-more {
+#restaurants-list article a.view-more {
   background-color: #185F91;
 }
-#restaurants-list article a.notfavorite,
+#restaurants-list article button.notfavorite,
 #favorite-button.notfavorite {
   background-color: #eaa612;
 }
-#restaurants-list article a.favorite,
+#restaurants-list article button.favorite,
 #favorite-button.favorite {
   background-color: #71a879;
 }

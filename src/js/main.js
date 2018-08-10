@@ -191,8 +191,9 @@ function createRestaurantHTML(restaurant){
   more.href = DBHelper.urlForRestaurant(restaurant);
   useractions.append(more)
 
-  const fav = document.createElement('a');
+  const fav = document.createElement('button');
   fav.setAttribute('data-id', restaurant.id);
+  fav.tabIndex = 0;
   if((typeof restaurant.is_favorite === "string" && restaurant.is_favorite === "false") ||
     (typeof restaurant.is_favorite === "boolean" && restaurant.is_favorite === false)) {
     fav.className = 'notfavorite';
